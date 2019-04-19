@@ -1,11 +1,30 @@
 package configs
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+)
+
+// database env
+const (
+	// connection
+	envKeyDatabaseDriver     = "BhDatabaseDriver"     // driver
+	envKeyDatabaseUsername   = "BhDatabaseUsername"   // username
+	envKeyDatabasePassword   = "BhDatabasePassword"   // password
+	envKeyDatabaseHost       = "BhDatabaseHost"       // host
+	envKeyDatabasePort       = "BhDatabasePort"       // port
+	envKeyDatabaseDBName     = "BhDatabaseDBName"     // db name
+	envKeyDatabaseParameters = "BhDatabaseParameters" // parameters
+
+	// options
+	envKeyDatabaseOrmDebug        = "BhDatabaseOrmDebug"        // debug
+	envKeyDatabaseTablePrefix     = "BhDatabaseTablePrefix"     // prefix
+	envKeyDatabaseMaxOpenConn     = "BhDatabaseMaxOpenConn"     // max open
+	envKeyDatabaseMaxIdleConn     = "BhDatabaseMaxIdleConn"     // idle
+	envKeyDatabaseConnMaxLifetime = "BhDatabaseConnMaxLifetime" // lifetime
 )
 
 // AuthConfig auth cfg
@@ -23,19 +42,19 @@ type AuthConfig struct {
 var GetAuthConfigHandler = func() *AuthConfig {
 	var cfg AuthConfig
 
-	cfg.Driver = strings.TrimSpace(os.Getenv("DatabaseDriver"))
-	cfg.Username = strings.TrimSpace(os.Getenv("DatabaseUsername"))
-	cfg.Password = strings.TrimSpace(os.Getenv("DatabasePassword"))
-	cfg.Host = strings.TrimSpace(os.Getenv("DatabaseHost"))
-	cfg.Port = strings.TrimSpace(os.Getenv("DatabasePort"))
-	cfg.DBName = strings.TrimSpace(os.Getenv("DatabaseDBName"))
-	cfg.Parameters = strings.TrimSpace(os.Getenv("DatabaseParameters"))
+	cfg.Driver = strings.TrimSpace(os.Getenv(envKeyDatabaseDriver))
+	cfg.Username = strings.TrimSpace(os.Getenv(envKeyDatabaseUsername))
+	cfg.Password = strings.TrimSpace(os.Getenv(envKeyDatabasePassword))
+	cfg.Host = strings.TrimSpace(os.Getenv(envKeyDatabaseHost))
+	cfg.Port = strings.TrimSpace(os.Getenv(envKeyDatabasePort))
+	cfg.DBName = strings.TrimSpace(os.Getenv(envKeyDatabaseDBName))
+	cfg.Parameters = strings.TrimSpace(os.Getenv(envKeyDatabaseParameters))
 
 	return &cfg
 }
 
 // tablePrefix : database table prefix
-var tablePrefix = strings.TrimSpace(os.Getenv("DatabaseTablePrefix"))
+var tablePrefix = strings.TrimSpace(os.Getenv(envKeyDatabaseTablePrefix))
 
 // GetTablePrefixHandler get table prefix
 var GetTablePrefixHandler = func() string {
@@ -65,33 +84,28 @@ var GetOptionConfigHandler = func() *OptionConfig {
 	var cfg OptionConfig
 	var err error
 
-	// debug
-	debugString := strings.TrimSpace(os.Getenv("DatabaseOrmDebug"))
 	//cfg.Debug = strings.ToLower(debugString) == "true"
-	cfg.Debug, _ = strconv.ParseBool(debugString)
+	cfg.Debug, _ = strconv.ParseBool(strings.TrimSpace(os.Getenv(envKeyDatabaseOrmDebug)))
 
 	// prefix
 	cfg.Prefix = GetTablePrefixHandler()
 
 	// max open
-	openString := strings.TrimSpace(os.Getenv("DatabaseMaxOpenConn"))
-	cfg.MaxOpen, err = strconv.Atoi(openString)
+	cfg.MaxOpen, err = strconv.Atoi(strings.TrimSpace(os.Getenv(envKeyDatabaseMaxOpenConn)))
 	if err != nil {
-		log.Println("strconv.Atoi(DatabaseMaxOpenConn) error : ", err)
+		logrus.Println("strconv.Atoi(envKeyDatabaseMaxOpenConn) error : ", err)
 	}
 
 	// max idle
-	idleString := strings.TrimSpace(os.Getenv("DatabaseMaxIdleConn"))
-	cfg.MaxIdle, err = strconv.Atoi(idleString)
+	cfg.MaxIdle, err = strconv.Atoi(strings.TrimSpace(os.Getenv(envKeyDatabaseMaxIdleConn)))
 	if err != nil {
-		log.Println("strconv.Atoi(DatabaseMaxIdleConn) error : ", err)
+		logrus.Println("strconv.Atoi(envKeyDatabaseMaxIdleConn) error : ", err)
 	}
 
 	// max lifetime
-	lifetimeString := strings.TrimSpace(os.Getenv("DatabaseConnMaxLifetime"))
-	cfg.MaxLifetime, err = time.ParseDuration(lifetimeString)
+	cfg.MaxLifetime, err = time.ParseDuration(strings.TrimSpace(os.Getenv(envKeyDatabaseConnMaxLifetime)))
 	if err != nil {
-		log.Println("time.ParseDuration(DatabaseConnMaxLifetime) error : ", err)
+		logrus.Println("time.ParseDuration(envKeyDatabaseConnMaxLifetime) error : ", err)
 	}
 	return &cfg
 }

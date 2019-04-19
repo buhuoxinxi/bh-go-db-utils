@@ -1,11 +1,11 @@
-package dblink
+package bhdbutils
 
 import (
-	"fmt"
-	"github.com/ikaiguang/go-dblink/config"
-	"github.com/ikaiguang/go-dblink/mysql"
-	"github.com/ikaiguang/go-dblink/postgres"
+	"github.com/buhuoxinxi/bh-go-db-utils/config"
+	"github.com/buhuoxinxi/bh-go-db-utils/mysql"
+	"github.com/buhuoxinxi/bh-go-db-utils/postgres"
 	"github.com/jinzhu/gorm"
+	"github.com/sirupsen/logrus"
 	"strings"
 )
 
@@ -34,16 +34,16 @@ func NewDBConn() *gorm.DB {
 		dbConn, err = postgres.NewDBConn(authCfg)
 
 	default:
-		panic(fmt.Errorf("invalid database driver"))
+		logrus.Fatal("invalid database driver")
 	}
 	// db connection error
 	if err != nil {
-		panic(fmt.Errorf("dblink new connection error : %v", err))
+		logrus.Fatalf("dblink new connection error : %v", err)
 	}
 
 	// ping
 	if err := dbConn.DB().Ping(); err != nil {
-		panic(fmt.Errorf("ping database connection fail : %v", err))
+		logrus.Fatalf("ping database connection fail : %v", err)
 	}
 	return SetDBConnOptions(dbConn)
 }

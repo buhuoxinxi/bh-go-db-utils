@@ -1,10 +1,11 @@
 package mysql
 
 import (
-	"fmt"
-	"github.com/ikaiguang/go-dblink/config"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // driver
+
+	"fmt"
+	"github.com/buhuoxinxi/bh-go-db-utils/config"
+	"github.com/jinzhu/gorm"
 )
 
 // NewDBConn : orm conn
