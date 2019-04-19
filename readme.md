@@ -18,7 +18,7 @@ mysql version
 
 ## test 
 
-run server & run client
+run test
 
 ```bash
 
