@@ -108,6 +108,9 @@ func SetOrmDebug(dbConn *gorm.DB, cfg *configs.OptionConfig) *gorm.DB {
 // If n <= 0, then there is no limit on the number of open connections.
 // The default is 0 (unlimited).
 func SetMaxOpenConn(dbConn *gorm.DB, cfg *configs.OptionConfig) {
+	if cfg.MaxOpen <= 0 {
+		return
+	}
 	dbConn.DB().SetMaxOpenConns(cfg.MaxOpen)
 }
 
@@ -123,6 +126,9 @@ func SetMaxOpenConn(dbConn *gorm.DB, cfg *configs.OptionConfig) {
 // The default max idle connections is currently 2. This may change in
 // a future release.
 func SetMaxIdleConn(dbConn *gorm.DB, cfg *configs.OptionConfig) {
+	if cfg.MaxIdle <= 0 {
+		return
+	}
 	dbConn.DB().SetMaxIdleConns(cfg.MaxIdle)
 }
 
@@ -133,5 +139,8 @@ func SetMaxIdleConn(dbConn *gorm.DB, cfg *configs.OptionConfig) {
 //
 // If d <= 0, connections are reused forever.
 func SetConnMaxLifetime(dbConn *gorm.DB, cfg *configs.OptionConfig) {
+	if cfg.MaxLifetime <= 0 {
+		return
+	}
 	dbConn.DB().SetConnMaxLifetime(cfg.MaxLifetime)
 }
